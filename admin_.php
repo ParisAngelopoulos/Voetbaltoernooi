@@ -1,11 +1,17 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'admin') {
+// Controleer of de gebruiker is ingelogd en admin is
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
+    // Als de gebruiker niet is ingelogd of geen admin is, stuur door naar loginpagina
     header("Location: login.php");
     exit();
 }
+
+// Hier kun je de admin-pagina weergeven als de controle slaagt
+echo "Welkom, Admin!";
 ?>
+
 
 <!DOCTYPE html>
 <html lang="nl"> 

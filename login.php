@@ -8,10 +8,17 @@
 </head>
 
 <body>
+<?php
+if (isset($_SESSION['error'])) {
+    echo '<p style="color: red;">' . $_SESSION['error'] . '</p>';
+    unset($_SESSION['error']); // Verwijder de foutmelding na weergave
+}
+?>
+
     <h2>Log in</h2>
     <form method="post" action="login_process.php">
     Gebruikersnaam: <input type="text" name="username"><br>
-    Wachtwoord: <input type="password" name="password_hash"><br>
+    Wachtwoord: <input type="password" name="password"><br>
         <input type="submit" value="Log in">
     </form>
 
