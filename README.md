@@ -14,9 +14,12 @@ Een webapp om een voetbaltoernooi te regelen. Teams schrijven zich in met hun sp
 
 ## Functies
 
+**Voor iedereen**
+- Een homepage met de **ranglijst** (3 punten voor winst, 1 voor gelijkspel, daarna doelsaldo), de komende wedstrijden en de laatste uitslagen.
+
 **Voor teams**
 - Een team inschrijven met teamnaam, inloggegevens en spelers (`register.php`). Gebruiker, team en spelers worden in één transactie opgeslagen: lukt één stap niet, dan wordt niets bewaard.
-- Een eigen dashboard met de geplande wedstrijden en uitslagen.
+- Een eigen dashboard met je spelers, je volgende wedstrijd, je wedstrijden en de ranglijst met jouw team gemarkeerd.
 - Teams en hun spelers bekijken (`view_teams.php`).
 
 **Voor de admin**
