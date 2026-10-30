@@ -49,6 +49,22 @@ if (isset($_SESSION['error'])) {
                 <a href="register.php" class="text-blue-600 hover:underline">Registreer hier</a>
             </div>
 
+            <!-- Testaccounts, zodat bezoekers zonder registreren kunnen rondkijken -->
+            <div class="mt-6 p-4 bg-gray-700 rounded-lg text-sm">
+                <p class="font-semibold mb-2">Even rondkijken? Kies een testaccount:</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="vulIn('admin', 'admin123')" class="px-3 py-1 bg-gray-900 border border-gray-500 rounded-full hover:bg-gray-600">admin (beheer)</button>
+                    <button type="button" onclick="vulIn('fcveenendaal', 'welkom123')" class="px-3 py-1 bg-gray-900 border border-gray-500 rounded-full hover:bg-gray-600">FC Veenendaal (team)</button>
+                </div>
+                <p class="text-gray-300 mt-2">Admin: <code>admin123</code>, teams: <code>welkom123</code>. Als admin plan je wedstrijden en vul je uitslagen in.</p>
+            </div>
+            <script>
+                function vulIn(gebruiker, wachtwoord) {
+                    document.getElementById('username').value = gebruiker;
+                    document.getElementById('password').value = wachtwoord;
+                }
+            </script>
+
         </div>
     </main>
 
