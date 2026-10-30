@@ -57,7 +57,7 @@ De andere teams (`wolves`, `barneveld`, `stars`) hebben ook het wachtwoord `welk
 
 | Tabel | Wat erin staat |
 | --- | --- |
-| `users` | Accounts, met rol `admin` of `user` |
+| `vt_users` | Accounts, met rol `admin` of `user` |
 | `teams` | Teams, gekoppeld aan het account dat ze heeft ingeschreven |
 | `players` | Spelers per team |
 | `matches` | Wedstrijden: twee teams, een datum en de uitslag |

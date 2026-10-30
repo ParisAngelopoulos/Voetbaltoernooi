@@ -5,9 +5,9 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET NAMES utf8mb4;
 
-DROP TABLE IF EXISTS `matches`, `players`, `teams`, `users`;
+DROP TABLE IF EXISTS `matches`, `players`, `teams`, `vt_users`;
 
-CREATE TABLE `users` (
+CREATE TABLE `vt_users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `users` (`user_id`, `username`, `password_hash`, `role`, `loggedin`) VALUES
+INSERT INTO `vt_users` (`user_id`, `username`, `password_hash`, `role`, `loggedin`) VALUES
 (1, 'admin', '$2y$10$rgSNNmzZ/tJrl6LtHDboGu1tz1rEfxXrxjkYgWEWXowqbSjCP9eCO', 'admin', 0),
 (2, 'fcveenendaal', '$2y$10$NzYQQPJn63vmWhUl.H22C.84CPqtQ/tWbQiCK9YDjFfsS/qNH7Nma', 'user', 0),
 (3, 'edeunited', '$2y$10$NzYQQPJn63vmWhUl.H22C.84CPqtQ/tWbQiCK9YDjFfsS/qNH7Nma', 'user', 0),
@@ -32,7 +32,7 @@ CREATE TABLE `teams` (
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`team_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+  CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `vt_users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `teams` (`team_id`, `team_name`, `user_id`) VALUES
