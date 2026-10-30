@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];  // Pas dit aan naar 'password' en niet 'password_hash'
 
     // Zoek de gebruiker in de database
-    $stmt = $db->prepare("SELECT * FROM vt_users WHERE username = :username");
+    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -3,7 +3,7 @@
   <text x="72" y="118" font-size="20" font-weight="600" fill="#c2410c" letter-spacing="2">PROJECT · 2025</text>
   <text x="72" y="190" font-size="64" font-weight="700" fill="#1c1c1c">Voetbaltoernooi</text>
   <text x="72" y="244" font-size="26" fill="#5f5f5f">Teams, wedstrijden en uitslagen</text>
-  <rect x="72" y="300" width="51" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="97" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">PHP</text><rect x="132.8" y="300" width="70" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="168" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">MySQL</text><rect x="212.8" y="300" width="137" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="281" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">Tailwind CSS</text>
+  <rect x="72" y="300" width="51" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="97" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">PHP</text><rect x="132.8" y="300" width="80" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="173" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">SQLite</text><rect x="222.4" y="300" width="137" height="36" rx="18" fill="#fff" stroke="#f2d5ca"/><text x="291" y="324" text-anchor="middle" font-size="16" fill="#3a3a3a">Tailwind CSS</text>
   <g transform="translate(760 70)">
     <rect width="450" height="350" rx="14" fill="#fff"/>
     <rect y="336" width="450" height="14" fill="#fff"/>

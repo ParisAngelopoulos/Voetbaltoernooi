@@ -9,7 +9,7 @@ $password = 'admin';
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 // SQL-query om de nieuwe admin toe te voegen
-$query = "INSERT INTO `vt_users` (`username`, `password_hash`, `role`, `loggedin`) 
+$query = "INSERT INTO `users` (`username`, `password_hash`, `role`, `loggedin`) 
           VALUES ('admin', :password_hash, 'admin', 0)";
 
 $stmt = $db->prepare($query);

@@ -4,7 +4,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white" alt="PHP">
-  <img src="https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
   <img src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
 </p>
 
@@ -28,17 +28,15 @@ Na het inloggen stuurt de site je op basis van je rol naar het juiste dashboard.
 
 ## Zelf draaien
 
-Je hebt een lokale webserver met PHP en MySQL nodig, bijvoorbeeld XAMPP.
+Je hebt alleen PHP nodig (bijvoorbeeld XAMPP); een database hoef je niet in te stellen. De site gebruikt **SQLite**: bij het eerste bezoek maakt hij zelf `private/database.sqlite` aan, met de voorbeelddata uit `private/database.sql`.
 
 1. Clone het project in de map van je webserver:
    ```bash
    git clone https://github.com/ParisAngelopoulos/Voetbaltoernooi.git
    ```
-2. Maak in phpMyAdmin een database aan met de naam `voetbaltoernooi`.
-3. Importeer daarin het bestand `voetbaltoernooi (2).sql`.
-4. Ga naar http://localhost/Voetbaltoernooi en log in.
+2. Ga naar http://localhost/Voetbaltoernooi en log in.
 
-De verbinding met de database staat in `database_connection.php`.
+Wil je opnieuw beginnen met alleen de voorbeelddata? Verwijder dan `private/database.sqlite`.
 
 ### Testaccounts
 
@@ -55,9 +53,11 @@ De andere teams (`wolves`, `barneveld`, `stars`) hebben ook het wachtwoord `welk
 
 ## Database
 
+De tabellen en voorbeelddata staan in `private/database.sql` (de map `private/` is niet via het web te openen).
+
 | Tabel | Wat erin staat |
 | --- | --- |
-| `vt_users` | Accounts, met rol `admin` of `user` |
+| `users` | Accounts, met rol `admin` of `user` |
 | `teams` | Teams, gekoppeld aan het account dat ze heeft ingeschreven |
 | `players` | Spelers per team |
 | `matches` | Wedstrijden: twee teams, een datum en de uitslag |
