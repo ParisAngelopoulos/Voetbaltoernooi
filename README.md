@@ -20,8 +20,8 @@ Een webapp om een voetbaltoernooi te regelen. Teams schrijven zich in met hun sp
 - Teams en hun spelers bekijken (`view_teams.php`).
 
 **Voor de admin**
-- Een beheerdersdashboard (`admin_.php`).
-- Wedstrijden plannen tussen twee teams op een datum (`plan_matches.php`).
+- Een beheerdersdashboard (`admin_.php`). De admin-pagina's zijn afgeschermd: wie geen admin is, gaat terug naar het inlogscherm.
+- Wedstrijden plannen tussen twee teams op een datum (`plan_matches.php`). Een team kan niet tegen zichzelf spelen.
 - Uitslagen invoeren (`enter_results.php`).
 
 Na het inloggen stuurt de site je op basis van je rol naar het juiste dashboard. Wachtwoorden worden versleuteld opgeslagen met `password_hash`.
@@ -42,13 +42,16 @@ De verbinding met de database staat in `database_connection.php`.
 
 ### Testaccounts
 
-In de database staan drie accounts om mee te proberen:
+In de database staan zes teams met elk vijf spelers, negen gespeelde wedstrijden met uitslag en drie geplande wedstrijden.
 
 | Rol | Gebruikersnaam | Wachtwoord |
 | --- | --- | --- |
-| Admin | `admin` | `password` |
-| Team | `paris` | `paris` |
-| Team | `peter` | `peter` |
+| Admin | `admin` | `admin123` |
+| Team FC Veenendaal | `fcveenendaal` | `welkom123` |
+| Team Ede United | `edeunited` | `welkom123` |
+| Team Rhenen Rangers | `rhenen` | `welkom123` |
+
+De andere teams (`wolves`, `barneveld`, `stars`) hebben ook het wachtwoord `welkom123`.
 
 ## Database
 

@@ -44,7 +44,7 @@ $matches = $db->query("SELECT matches.match_id, teams1.team_name as team1_name, 
                     <tbody>
                         <?php foreach ($teams as $team): ?>
                             <tr>
-                                <td class="border p-2"><?= $team['team_name']; ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$team['team_name']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -72,12 +72,12 @@ $matches = $db->query("SELECT matches.match_id, teams1.team_name as team1_name, 
                     <tbody>
                         <?php foreach ($matches as $match): ?>
                             <tr>
-                                <td class="border p-2"><?= $match['match_id']; ?></td>
-                                <td class="border p-2"><?= $match['team1_name']; ?></td>
-                                <td class="border p-2"><?= $match['team2_name']; ?></td>
-                                <td class="border p-2"><?= $match['match_date']; ?></td>
-                                <td class="border p-2"><?= $match['team1_results']; ?></td>
-                                <td class="border p-2"><?= $match['team2_results']; ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['match_id']); ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['team1_name']); ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['team2_name']); ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['match_date']); ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['team1_results']); ?></td>
+                                <td class="border p-2"><?= htmlspecialchars((string)$match['team2_results']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
