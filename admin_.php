@@ -1,61 +1,54 @@
 <?php
 session_start();
+require_once('database_connection.php');
+require_once('layout.php');
+require_once('standings.php');
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
 ?>
+<?php
+$matches = all_matches($db);
+$planned = array_values(array_filter($matches, fn ($m) => $m['team1_results'] === null));
+$counts = [
+    'Teams' => $db->query("SELECT COUNT(*) FROM teams")->fetchColumn(),
+    'Spelers' => $db->query("SELECT COUNT(*) FROM players")->fetchColumn(),
+    'Gespeeld' => count($matches) - count($planned),
+    'Gepland' => count($planned),
+];
+vt_header('Beheer');
+?>
+    <h1 class="text-3xl font-extrabold">Beheerdersdashboard</h1>
+    <p class="text-slate-400 mt-1 mb-6">Plan wedstrijden, vul uitslagen in en houd de ranglijst bij.</p>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <title>Beheerdersdashboard</title>
-</head>
-<body class="bg-black text-white font-sans min-h-screen flex flex-col">
+    <div class="grid gap-4 grid-cols-2 md:grid-cols-4 mb-8">
+        <?php foreach ($counts as $label => $count): ?>
+            <div class="rounded-xl bg-slate-900 border border-slate-800 p-4">
+                <div class="text-3xl font-extrabold text-orange-400"><?php echo (int)$count; ?></div>
+                <div class="text-sm text-slate-400"><?php echo $label; ?></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
-    <!-- Header -->
-    <header class="bg-gray-900 text-white p-6 shadow-lg">
-        <h1 class="text-4xl font-extrabold text-center">Beheerdersdashboard</h1>
-    </header>
-
-    <!-- Main content -->
-    <main class="flex-1 container mx-auto p-8">
-
-        <!-- Welkomstbericht -->
-        <h2 class="text-3xl font-semibold mb-6 text-center text-blue-500">Welkom, Admin!</h2>
-
-        <!-- Acties menu -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <a href="view_teams.php" class="block bg-blue-600 text-white p-6 rounded-lg shadow-xl hover:bg-blue-700 transition transform hover:scale-105">
-                <h3 class="text-2xl font-semibold mb-4">Teams bekijken</h3>
-                <p class="text-lg">Bekijk de lijst van alle teams.</p>
+    <div class="grid gap-4 md:grid-cols-3 mb-10">
+        <?php foreach ([['view_teams.php', 'Teams bekijken', 'Alle teams met hun spelers.', '👥'], ['plan_matches.php', 'Wedstrijd plannen', 'Zet een nieuwe wedstrijd op het schema.', '📅'], ['enter_results.php', 'Uitslag invoeren', 'Vul de score van een wedstrijd in.', '🏆']] as [$href, $title, $text, $icon]): ?>
+            <a href="<?php echo $href; ?>" class="rounded-xl bg-slate-900 border border-slate-800 p-5 hover:border-brand hover:bg-slate-800 transition">
+                <div class="text-2xl"><?php echo $icon; ?></div>
+                <div class="mt-2 font-semibold text-lg"><?php echo $title; ?></div>
+                <div class="text-sm text-slate-400"><?php echo $text; ?></div>
             </a>
+        <?php endforeach; ?>
+    </div>
 
-            <a href="plan_matches.php" class="block bg-blue-600 text-white p-6 rounded-lg shadow-xl hover:bg-blue-700 transition transform hover:scale-105">
-                <h3 class="text-2xl font-semibold mb-4">Wedstrijden plannen</h3>
-                <p class="text-lg">Plan nieuwe wedstrijden tussen teams.</p>
-            </a>
-
-            <a href="enter_results.php" class="block bg-blue-600 text-white p-6 rounded-lg shadow-xl hover:bg-blue-700 transition transform hover:scale-105">
-                <h3 class="text-2xl font-semibold mb-4">Uitslagen invoeren</h3>
-                <p class="text-lg">Voer de resultaten van de gespeelde wedstrijden in.</p>
-            </a>
-        </div>
-
-        <!-- Uitlogknop -->
-        <p class="mt-6 text-center">
-            <a href="logout.php" class="text-blue-600 hover:underline text-lg">Uitloggen</a>
-        </p>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-6 text-center mt-12">
-        <p>&copy; <?= date("Y"); ?> Voetbaltoernooi. Alle rechten voorbehouden.</p>
-    </footer>
-
-</body>
-</html>
+    <div class="grid gap-8 lg:grid-cols-3">
+        <section class="lg:col-span-2">
+            <h2 class="text-xl font-bold mb-3">Ranglijst</h2>
+            <?php standings_table($db); ?>
+        </section>
+        <section>
+            <h2 class="text-xl font-bold mb-3">Nog te spelen</h2>
+            <?php match_list($planned); ?>
+        </section>
+    </div>
+<?php vt_footer(); ?>

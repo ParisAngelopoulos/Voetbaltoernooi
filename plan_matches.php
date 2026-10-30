@@ -6,6 +6,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION
     exit();
 }
 require_once('database_connection.php');
+require_once('layout.php');
+require_once('standings.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $team1Id = $_POST['team1'];
@@ -32,69 +34,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmtTeams = $db->query("SELECT * FROM teams");
 $teams = $stmtTeams->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <title>Wedstrijden Plannen</title>
-</head>
-<body class="bg-black text-white font-sans min-h-screen">
-
-    <!-- Header -->
-    <header class="bg-gray-900 text-white p-6 shadow-lg">
-        <h1 class="text-4xl font-extrabold text-center">Wedstrijden Plannen</h1>
-    </header>
-
-    <!-- Main content -->
-    <main class="container mx-auto p-8">
-
-        <!-- Formulier voor wedstrijdplanning -->
-        <?php if (!empty($melding)): ?>
-            <p class="mb-6 p-4 rounded-lg bg-gray-800 text-center font-semibold"><?php echo htmlspecialchars($melding); ?></p>
-        <?php endif; ?>
-        <form method="post" action="" class="bg-gray-800 p-6 rounded-lg shadow-xl">
-            <div class="mb-6">
-                <label for="team1" class="block text-lg font-semibold mb-2">Team 1:</label>
-                <select id="team1" name="team1" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
-                    <?php foreach ($teams as $team): ?>
-                        <option value="<?php echo $team['team_id']; ?>"><?php echo htmlspecialchars($team['team_name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="mb-6">
-                <label for="team2" class="block text-lg font-semibold mb-2">Team 2:</label>
-                <select id="team2" name="team2" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
-                    <?php foreach ($teams as $team): ?>
-                        <option value="<?php echo $team['team_id']; ?>"><?php echo htmlspecialchars($team['team_name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="mb-6">
-                <label for="match_date" class="block text-lg font-semibold mb-2">Wedstrijddatum:</label>
-                <input type="datetime-local" id="match_date" name="match_date" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
-            </div>
-
-            <div class="text-center">
-                <input type="submit" value="Wedstrijd Plannen" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">
-            </div>
-        </form>
-
-        <!-- Terug naar Dashboard link -->
-        <div class="mt-8 text-center">
-            <a href="admin_.php" class="text-blue-600 hover:underline text-lg">Terug naar Dashboard</a>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-6 text-center mt-12">
-        <p>&copy; <?= date("Y"); ?> Voetbaltoernooi. Alle rechten voorbehouden.</p>
-    </footer>
-
-</body>
-</html>
+<?php
+$planned = array_values(array_filter(all_matches($db), fn ($m) => $m['team1_results'] === null));
+vt_header('Wedstrijd plannen');
+?>
+    <div class="grid gap-8 md:grid-cols-2">
+        <section>
+            <h1 class="text-3xl font-extrabold mb-6">Wedstrijd plannen</h1>
+            <?php vt_message($melding ?? '', strpos($melding ?? '', 'succesvol') !== false); ?>
+            <form method="post" action="" class="rounded-xl bg-slate-900 border border-slate-800 p-6 space-y-4">
+                <label class="block"><span class="text-sm text-slate-300">Thuisteam</span>
+                    <select id="team1" name="team1" class="w-full mt-1 p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand" required>
+                        <?php foreach ($teams as $team): ?>
+                            <option value="<?php echo $team['team_id']; ?>"><?php echo htmlspecialchars($team['team_name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="block"><span class="text-sm text-slate-300">Uitteam</span>
+                    <select id="team2" name="team2" class="w-full mt-1 p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand" required>
+                        <?php foreach ($teams as $i => $team): ?>
+                            <option value="<?php echo $team['team_id']; ?>" <?php echo $i === 1 ? 'selected' : ''; ?>><?php echo htmlspecialchars($team['team_name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="block"><span class="text-sm text-slate-300">Datum</span>
+                    <input type="date" id="match_date" name="match_date" value="<?php echo date('Y-m-d', strtotime('+7 days')); ?>" class="w-full mt-1 p-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-brand" required>
+                </label>
+                <input type="submit" value="Wedstrijd plannen" class="w-full py-2.5 rounded-lg bg-brand font-semibold hover:bg-brand-dark cursor-pointer">
+            </form>
+        </section>
+        <section>
+            <h2 class="text-xl font-bold mb-3 md:mt-14">Al gepland</h2>
+            <?php match_list($planned); ?>
+        </section>
+    </div>
+<?php vt_footer(); ?>
