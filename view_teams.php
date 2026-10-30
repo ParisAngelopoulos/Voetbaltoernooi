@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Alleen de admin mag deze pagina gebruiken
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
 require_once('database_connection.php');
 
 $teams = $db->query("SELECT * FROM teams")->fetchAll(PDO::FETCH_ASSOC);
@@ -42,7 +47,7 @@ $matches = $db->query("SELECT matches.match_id, teams1.team_name as team1_name, 
                     <tbody>
                         <?php foreach ($teams as $team): ?>
                             <tr class="hover:bg-gray-700 cursor-pointer">
-                                <td class="team-name p-4"><?= $team['team_name']; ?></td>
+                                <td class="team-name p-4"><?= htmlspecialchars((string)$team['team_name']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -69,11 +74,11 @@ $matches = $db->query("SELECT matches.match_id, teams1.team_name as team1_name, 
                     <tbody>
                         <?php foreach ($matches as $match): ?>
                             <tr class="hover:bg-gray-700">
-                                <td class="p-4"><?= $match['team1_name']; ?></td>
-                                <td class="p-4"><?= $match['team2_name']; ?></td>
-                                <td class="p-4"><?= $match['match_date']; ?></td>
-                                <td class="p-4"><?= $match['team1_results']; ?></td>
-                                <td class="p-4"><?= $match['team2_results']; ?></td>
+                                <td class="p-4"><?= htmlspecialchars((string)$match['team1_name']); ?></td>
+                                <td class="p-4"><?= htmlspecialchars((string)$match['team2_name']); ?></td>
+                                <td class="p-4"><?= htmlspecialchars((string)$match['match_date']); ?></td>
+                                <td class="p-4"><?= htmlspecialchars((string)$match['team1_results']); ?></td>
+                                <td class="p-4"><?= htmlspecialchars((string)$match['team2_results']); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

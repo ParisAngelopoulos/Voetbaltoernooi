@@ -1,4 +1,10 @@
 <?php
+session_start();
+// Alleen de admin mag deze pagina gebruiken
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
 require_once('database_connection.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -13,13 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $stmt->execute();
-        echo "Wedstrijdresultaten succesvol ingevoerd!";
+        $melding = "Wedstrijdresultaten succesvol ingevoerd!";
     } catch (PDOException $e) {
-        echo "Fout: " . $e->getMessage();
+        $melding = "Fout: " . $e->getMessage();
     }
 }
 
-$stmtMatches = $db->query("SELECT * FROM matches");
+// Met teamnamen, zodat je in de lijst ziet welke wedstrijd het is
+$stmtMatches = $db->query("SELECT matches.*, teams1.team_name AS team1_name, teams2.team_name AS team2_name FROM matches
+                           JOIN teams AS teams1 ON matches.team1_id = teams1.team_id
+                           JOIN teams AS teams2 ON matches.team2_id = teams2.team_id
+                           ORDER BY matches.match_date");
 $matches = $stmtMatches->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -42,24 +52,27 @@ $matches = $stmtMatches->fetchAll(PDO::FETCH_ASSOC);
     <main class="container mx-auto p-8 flex-grow">
 
         <!-- Formulier voor uitslagen invoeren -->
+        <?php if (!empty($melding)): ?>
+            <p class="mb-6 p-4 rounded-lg bg-gray-800 text-center font-semibold"><?php echo htmlspecialchars($melding); ?></p>
+        <?php endif; ?>
         <form method="post" action="" class="bg-gray-800 p-6 rounded-lg shadow-xl">
             <div class="mb-6">
                 <label for="match_id" class="block text-lg font-semibold mb-2">Selecteer Wedstrijd:</label>
                 <select id="match_id" name="match_id" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
                     <?php foreach ($matches as $match): ?>
-                        <option value="<?php echo $match['match_id']; ?>"><?php echo $match['match_id']; ?></option>
+                        <option value="<?php echo $match['match_id']; ?>"><?php echo htmlspecialchars($match['match_date'] . ': ' . $match['team1_name'] . ' – ' . $match['team2_name']); ?><?php if ($match['team1_results'] !== null) echo ' (' . $match['team1_results'] . '-' . $match['team2_results'] . ')'; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="mb-6">
                 <label for="team1_results" class="block text-lg font-semibold mb-2">Team 1 Uitslagen:</label>
-                <input type="number" id="team1_results" name="team1_results" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
+                <input type="number" id="team1_results" name="team1_results" min="0" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
             </div>
 
             <div class="mb-6">
                 <label for="team2_results" class="block text-lg font-semibold mb-2">Team 2 Uitslagen:</label>
-                <input type="number" id="team2_results" name="team2_results" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
+                <input type="number" id="team2_results" name="team2_results" min="0" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
             </div>
 
             <div class="text-center">

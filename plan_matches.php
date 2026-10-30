@@ -1,4 +1,10 @@
 <?php
+session_start();
+// Alleen de admin mag deze pagina gebruiken
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
 require_once('database_connection.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -6,16 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $team2Id = $_POST['team2'];
     $matchDate = $_POST['match_date'];
 
-    $stmt = $db->prepare("INSERT INTO matches (team1_id, team2_id, match_date) VALUES (:team1_id, :team2_id, :match_date)");
-    $stmt->bindParam(':team1_id', $team1Id);
-    $stmt->bindParam(':team2_id', $team2Id);
-    $stmt->bindParam(':match_date', $matchDate);
+    if ($team1Id === $team2Id) {
+        $melding = "Een team kan niet tegen zichzelf spelen. Kies twee verschillende teams.";
+    } else {
+        $stmt = $db->prepare("INSERT INTO matches (team1_id, team2_id, match_date) VALUES (:team1_id, :team2_id, :match_date)");
+        $stmt->bindParam(':team1_id', $team1Id);
+        $stmt->bindParam(':team2_id', $team2Id);
+        $stmt->bindParam(':match_date', $matchDate);
 
-    try {
-        $stmt->execute();
-        echo "Wedstrijd succesvol gepland!";
-    } catch (PDOException $e) {
-        echo "Fout: " . $e->getMessage();
+        try {
+            $stmt->execute();
+            $melding = "Wedstrijd succesvol gepland!";
+        } catch (PDOException $e) {
+            $melding = "Fout: " . $e->getMessage();
+        }
     }
 }
 
@@ -42,12 +52,15 @@ $teams = $stmtTeams->fetchAll(PDO::FETCH_ASSOC);
     <main class="container mx-auto p-8">
 
         <!-- Formulier voor wedstrijdplanning -->
+        <?php if (!empty($melding)): ?>
+            <p class="mb-6 p-4 rounded-lg bg-gray-800 text-center font-semibold"><?php echo htmlspecialchars($melding); ?></p>
+        <?php endif; ?>
         <form method="post" action="" class="bg-gray-800 p-6 rounded-lg shadow-xl">
             <div class="mb-6">
                 <label for="team1" class="block text-lg font-semibold mb-2">Team 1:</label>
                 <select id="team1" name="team1" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
                     <?php foreach ($teams as $team): ?>
-                        <option value="<?php echo $team['team_id']; ?>"><?php echo $team['team_name']; ?></option>
+                        <option value="<?php echo $team['team_id']; ?>"><?php echo htmlspecialchars($team['team_name']); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -56,7 +69,7 @@ $teams = $stmtTeams->fetchAll(PDO::FETCH_ASSOC);
                 <label for="team2" class="block text-lg font-semibold mb-2">Team 2:</label>
                 <select id="team2" name="team2" class="w-full p-3 bg-gray-700 text-white rounded-md" required>
                     <?php foreach ($teams as $team): ?>
-                        <option value="<?php echo $team['team_id']; ?>"><?php echo $team['team_name']; ?></option>
+                        <option value="<?php echo $team['team_id']; ?>"><?php echo htmlspecialchars($team['team_name']); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

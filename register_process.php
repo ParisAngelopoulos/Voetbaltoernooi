@@ -30,19 +30,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtPlayers = $db->prepare("INSERT INTO players (player_name, team_id) VALUES (:player_name, :team_id)");
         $stmtPlayers->bindParam(':team_id', $teamId);
 
-        foreach ($players as $playerName) {
+        foreach (array_filter(array_map('trim', $players)) as $playerName) {
             $stmtPlayers->bindParam(':player_name', $playerName);
             $stmtPlayers->execute();
         }
 
         $db->commit();
 
-        echo "Registratie succesvol!";
         header("Location: login.php");
+        exit();
 
     } catch (PDOException $e) {
         $db->rollBack();
-        echo "Fout: " . $e->getMessage();
+        // 23000 = de gebruikersnaam bestaat al (UNIQUE in de database)
+        echo $e->getCode() == 23000 ? "Deze gebruikersnaam is al in gebruik. <a href='register.php'>Probeer een andere</a>." : "Fout: " . htmlspecialchars($e->getMessage());
     }
 }
 ?>
